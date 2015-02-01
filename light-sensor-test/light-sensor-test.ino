@@ -2,8 +2,6 @@
 
 int lightLevel;
 
-unsigned long time;
-
 
 void setup(void)
 {
@@ -17,15 +15,18 @@ void loop(void)
 {
 
     
-    // Measure light level
-    lightLevel = analogRead(A0);
+  // Wait 2 seconds
+  delay(2000);
+  
+}
+
+void checkSensors() {
+  
+  // Measure light level
+  lightLevel = analogRead(A0);
 
     
-    // Print measurement
-    Serial.print("Light level: ");
-    Serial.println(lightLevel);
-    
-    // Wait 2 seconds
-    delay(2000);
-  
+  // Print measurement
+  Serial.print("Light level: ");
+  Serial.println(lightLevel);
 }
