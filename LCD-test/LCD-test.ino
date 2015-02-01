@@ -29,7 +29,7 @@ float CO2Curve[3] = {2.602,ZERO_POINT_VOLTAGE,(REACTION_VOLTGAE/(2.602-3))};
       //"approximately equivalent" to the original curve.
       //data format:{ x, y, slope}; point1: (lg400, 0.324), point2: (lg4000, 0.280) 
       //slope = ( reaction voltage ) / (log400 –log1000) 
-int CO2percentage; // CO2 sensor reading
+int percentage; // CO2 sensor reading
 float volts; // CO2 sensor reading
 float waterTempC;
 float waterTempF;
@@ -84,15 +84,15 @@ void checkSensors() {
   
   // Reading temperature or humidity takes about 250 milliseconds!
   // Sensor readings may also be up to 2 seconds 'old' (its a very slow sensor)
-  humidity = dht.readHumidity();
+  float humidity = dht.readHumidity();
   // Read temperature as Celsius
-  temperatureC = dht.readTemperature();
+  float temperatureC = dht.readTemperature();
   // Read temperature as Fahrenheit
-  temperatureF = dht.readTemperature(true);
+  float temperatureF = dht.readTemperature(true);
 
   // CO2 sensor readings
   volts = MGRead(MG_PIN);
-  CO2percentage = MGGetPercentage(volts,CO2Curve);
+  percentage = MGGetPercentage(volts,CO2Curve);
 
   // Water temperature sensor reading
   sensors.requestTemperatures(); // Send the command to get temperatures
@@ -118,10 +118,10 @@ void checkSensors() {
   Serial.print(volts); 
   Serial.print( "V           " );
   Serial.print("CO2:");
-  if (CO2percentage == -1) {
+  if (percentage == -1) {
       Serial.print( "<400" );
   } else {
-      Serial.print(CO2percentage);
+      Serial.print(percentage);
   }
   Serial.print( "ppm" );  
   Serial.print( "       Time point:" );
@@ -173,3 +173,20 @@ int  MGGetPercentage(float volts, float *pcurve)
    }
 }
 
+
+// Water temperature sensor function to function to print the temperature for a device
+void printTemperature(DeviceAddress deviceAddress)
+{
+  // method 1 - slower
+  //Serial.print("Temp C: ");
+  //Serial.print(sensors.getTempC(deviceAddress));
+  //Serial.print(" Temp F: ");
+  //Serial.print(sensors.getTempF(deviceAddress)); // Makes a second call to getTempC and then converts to Fahrenheit
+
+  // method 2 - faster
+  float tempC = sensors.getTempC(deviceAddress);
+  Serial.print("Temp C: ");
+  Serial.print(tempC);
+  Serial.print(" Temp F: ");
+  Serial.println(DallasTemperature::toFahrenheit(tempC)); // Converts tempC to Fahrenheit
+}
